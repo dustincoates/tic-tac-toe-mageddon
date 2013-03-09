@@ -5,6 +5,12 @@ $(function() {
 TTTAPP = {};
 TTTAPP.player = "X";
 TTTAPP.computer = "O";
+TTTAPP.currentMove = {
+  row: nil,
+  column: nil,
+  diagonal0: nil,
+  diagonal1: nil
+};
 
 TTTAPP.rows = {
   0: {
@@ -57,13 +63,14 @@ TTTAPP.diagonals = {
 
 TTTAPP.playMove = function () {
   console.log(this);
+  getSpaceInfo();
 };
 
 TTTAPP.getSpaceInfo = function (spaceNum) {
-  var row = Math.floor(spaceNum),
-      column = spaceNum % 3,
-      diagonal0 = ((spaceNum%2) === 0),
-      diagonal1 = ((spaceNum%4) === 0);
+  TTTAPP.currentMove.row = Math.floor(spaceNum),
+  TTTAPP.currentMove.column = spaceNum % 3,
+  TTTAPP.currentMove.diagonal0 = ((spaceNum%2) === 0),
+  TTTAPP.currentMove.diagonal1 = ((spaceNum%4) === 0);
 };
 
 TTTAPP.setSpace = function (spaceNum) {
