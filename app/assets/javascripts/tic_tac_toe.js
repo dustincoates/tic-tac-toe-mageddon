@@ -1,23 +1,12 @@
 $(function() {
-
+  $('div.square').click(TTTAPP.playMove);
 });
 
-//space#/3 = row
-//space#%3 = column
-//space%2 === 0? diagonal
-//space/2%2 === 0? diag0
-//space/2%2 !== 0? diag1
+TTTAPP = {};
+TTTAPP.player = "X";
+TTTAPP.computer = "O";
 
-function getSpaceInfo () {
-  var row = Math.floor(spaceNum),
-      column = spaceNum % 3,
-      diagonal0 = !!((spaceNum/2)%2 === 0),
-      diagonal1 = !((spaceNum/2)%2 !== 0);
-}
-
-
-
-rows = {
+TTTAPP.rows = {
   0: {
     0: nil,
     1: nil,
@@ -35,7 +24,7 @@ rows = {
   }
 };
 
-columns = {
+TTTAPP.columns = {
   0: {
     0: nil,
     3: nil,
@@ -53,8 +42,38 @@ columns = {
   }
 };
 
-diagonals = {
+TTTAPP.diagonals = {
   0: {
-
+    0: nil,
+    4: nil,
+    8: nil
+  },
+  1: {
+    2: nil,
+    5: nil,
+    6: nil
   }
+};
+
+TTTAPP.playMove = function () {
+  console.log(this);
+};
+
+TTTAPP.getSpaceInfo = function (spaceNum) {
+  var row = Math.floor(spaceNum),
+      column = spaceNum % 3,
+      diagonal0 = ((spaceNum%2) === 0),
+      diagonal1 = ((spaceNum%4) === 0);
+};
+
+TTTAPP.setSpace = function (spaceNum) {
+  // Change DOM and remove click event
+};
+
+TTTAPP.isWinner = function () {
+  // Return true or false
+};
+
+TTTAPP.resetBoard = function () {
+  // Change DOM and re-add click events
 };
