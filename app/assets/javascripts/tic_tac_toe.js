@@ -2,327 +2,59 @@ $(function() {
 
 });
 
-playerMovesFirst = {
-  0: ,
-  1: ,
-  2: ,
-  3: ,
-  4: ,
-  5: ,
-  6: ,
-  7: ,
-  8:
-};
+//space#/3 = row
+//space#%3 = column
+//space%2 === 0? diagonal
+//space/2%2 === 0? diag0
+//space/2%2 !== 0? diag1
 
-computerMovesFirst = {
+function getSpaceInfo () {
+  var row = Math.floor(spaceNum),
+      column = spaceNum % 3,
+      diagonal0 = !!((spaceNum/2)%2 === 0),
+      diagonal1 = !((spaceNum/2)%2 !== 0);
+}
+
+
+
+rows = {
   0: {
-      1: {
-          move: 3,
-          3: {
-              2: {
-                  move: {win: 6}
-              },
-              4: {
-                  move: {win: 6}
-              },
-              5: {
-                  move: {win: 6}
-              },
-              6: {
-                  move: 4,
-                  4: {
-                      2: {
-                          move: {win: 5}
-                      },
-                      5: {
-                          move: {win: 8}
-                      },
-                      7: {
-                          move: {win: 5}
-                      },
-                      8: {
-                          move: {win: 8}
-                      }
-                  }
-              },
-              7: {
-                  move: {win: 6}
-              },
-              8: {
-                  move: {win: 6}
-              }
-            }
-      },
-      2: {
-          move: 3,
-          3: {
-              1: {
-                  move: {win: 6}
-              },
-              4: {
-                  move: {win: 6}
-              },
-              5: {
-                  move: {win: 6}
-              },
-              6: {
-                  move: 4
-                  4: {
-                      2: {
-                          move: {win: 5}
-                      },
-                      5: {
-                          move: {win: 8}
-                      },
-                      7: {
-                          move: {win: 5}
-                      },
-                      8: {
-                          move: {win: 5}
-                      }
-                  }
-              },
-              7: {
-                  move: {win: 6}
-              },
-              8: {
-                  move: {win: 6}
-              }
-          }
-      },
-      3: {
-          move: 1,
-          1: {
-              2: {
-                  move: 4,
-                  4: {
-                      5: {
-                          move: {win: 7}
-                      },
-                      6: {
-                          move: {win: 7}
-                      },
-                      7: {
-                          move: {win: 8}
-                      },
-                      8: {
-                          move: {win: 7}
-                      }
-                  }
-              },
-              4: {
-                  move: {win: 2}
-              },
-              5: {
-                  move: {win: 2}
-              },
-              6: {
-                  move: {win: 2}
-              },
-              7: {
-                  move: {win: 2}
-              },
-              8: {
-                  move: {win: 2}
-              }
-          }
-      },
-      4: {
-          move: 1,
-          1: {
-              2: {
-                  move: 6,
-                  6: {
-                      3: {
-                          move: 5,
-                          5: {
-                              7: {
-                                  move: {draw: 8}
-                              },
-                              8: {
-                                  move: {draw: 7}
-                              }
-                          }
-                      },
-                      5: {
-                          move: {win: 3}
-                      },
-                      7: {
-                          move: {win: 3}
-                      },
-                      8: {
-                          move: {win: 3}
-                      }
-                  }
-              },
-              3: {
-                  move: {win: 2}
-              },
-              5: {
-                  move: {win: 2}
-              },
-              6: {
-                  move: {win: 2}
-              },
-              7: {
-                  move: {win: 2}
-              },
-              8: {
-                  move: {win: 2}
-              }
-          }
-      },
-      5: {
-          move: 4,
-          4: {
-              1: {
-                  move: {win: 8}
-              },
-              2: {
-                  move: {win: 8}
-              },
-              3: {
-                  move: {win: 8}
-              },
-              6: {
-                  move: {win: 8}
-              },
-              7: {
-                  move: {win: 8}
-              },
-              8: {
-                  move: 2,
-                  2: {
-                      1: {
-                          move: {win: 6}
-                      },
-                      3: {
-                          move: {win: 1}
-                      },
-                      6: {
-                          move: {win: 1}
-                      },
-                      7: {
-                          move: {win: 1}
-                      },
-                      8: {
-                          move: {win: 1}
-                      }
-                  }
-              }
-          }
-      },
-      6: {
-          move: 1,
-          1: {
-              2: {
-                  move: 4,
-                  4: {
-                      3: {
-                          move: {win: 7}
-                      },
-                      5: {
-                          move: {win: 7}
-                      },
-                      7: {
-                          move: {win: 8}
-                      },
-                      8: {
-                          move: {win: 7}
-                      }
-                  }
-              },
-              3: {
-                  move: {win: 2}
-              },
-              4: {
-                  move: {win: 2}
-              },
-              5: {
-                  move: {win: 2}
-              },
-              7: {
-                  move: {win: 2}
-              },
-              8: {
-                  move: {win: 2}
-              }
-          }
-      },
-      7: {
-          move: 2,
-          2: {
-              1: {
-                  move: 4,
-                  4: {
-                      3: {
-                          move: {win: 6}
-                      },
-                      5: {
-                          move: {win: 6}
-                      },
-                      6: {
-                          move: {win: 8}
-                      },
-                      8: {
-                          move: {win: 6}
-                      }
-                  }
-              },
-              3: {
-                  move: {win: 1}
-              },
-              4: {
-                  move: {win: 1}
-              },
-              5: {
-                  move: {win: 1}
-              },
-              6: {
-                  move: {win: 1}
-              },
-              8: {
-                  move: {win: 1}
-              }
-          }
-      },
-      8: {
-          move: 2,
-          2: {
-              1: {
-                  move: 6,
-                  6: {
-                      3: {
-                          move: {win: 4}
-                      },
-                      4: {
-                          move: {win: 3}
-                      },
-                      5: {
-                          move: {win: 3}
-                      },
-                      7: {
-                          move: {win: 3}
-                      },
-                  }
-              },
-              3: {
-                  move: {win: 1}
-              },
-              4: {
-                  move: {win: 1}
-              },
-              5: {
-                  move: {win: 1}
-              },
-              6: {
-                  move: {win: 1}
-              },
-              7: {
-                  move: {win: 1}
-              }
-          }
-      }},
+    0: nil,
+    1: nil,
+    2: nil
+  },
+  1: {
+    3: nil,
+    4: nil,
+    5: nil
+  },
+  2: {
+    6: nil,
+    7: nil,
+    8: nil
+  }
 };
 
-//if move, do x, then return
+columns = {
+  0: {
+    0: nil,
+    3: nil,
+    6: nil
+  },
+  1: {
+    1: nil,
+    4: nil,
+    7: nil
+  },
+  2: {
+    2: nil,
+    5: nil,
+    8: nil
+  }
+};
+
+diagonals = {
+  0: {
+
+  }
+};
