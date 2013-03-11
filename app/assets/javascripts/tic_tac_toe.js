@@ -71,18 +71,23 @@ TTTAPP.movesPlayed = 0;
 //   }
 // };
 
-// TTTAPP.playPlayerMove = function () {
-//   var thisPiece = $(this),
-//       spaceNum = $(thisPiece).data('square');
-//   console.log(thisPiece);
-//   console.log(spaceNum);
-//   TTTAPP.getSpaceInfo(spaceNum);
-//   TTTAPP.setSpace(thisPiece, "player");
+TTTAPP.playPlayerMove = function () {
+  var thisPiece = $(this),
+      spaceNum = $(thisPiece).data('square');
+  console.log(thisPiece);
+  console.log(spaceNum);
 
-//   TTTAPP.updateGameData(spaceNum, "player");
+  if (TTTAPP.movesPlayed === 0){
+    rotateBoard(spaceNum);
+  }
 
-//   TTTAPP.determineWinner(spaceNum);
-// };
+  // TTTAPP.getSpaceInfo(spaceNum);
+  // TTTAPP.setSpace(thisPiece, "player");
+
+  // TTTAPP.updateGameData(spaceNum, "player");
+
+  // TTTAPP.determineWinner(spaceNum);
+};
 
 // TTTAPP.playComputerMove = function() {
 //   TTTAPP.isOnePlayAway();
@@ -163,7 +168,38 @@ TTTAPP.movesPlayed = 0;
 //   $('div.square').click(TTTAPP.playMove);
 // };
 
+// If player moves first and chooses something other than 0, 1, or 4, then we
+// "rotate" the board (i.e. renumber each space)
 
+function rotateBoard (firstMoveNum) {
+  var newOrder = [],
+      spaces = {};
+
+  // Set up spaces hash (cache DOM lookups)
+  for (i = 0; i < 9; i++){
+    spaces[i] = $('div.square[data-square="' + i + '"]');
+  }
+
+  switch(firstMoveNum){
+  case 2:
+  case 5:
+    newOrder = [6, 3, 0, 7, 4, 1, 8, 5, 2];
+    break;
+  case 3:
+  case 6:
+    newOrder = [2, 5, 8, 1, 4, 7, 0, 3, 6];
+    break;
+  case 7:
+  case 8:
+    newOrder = [8, 7, 6, 5, 4, 3, 2, 1, 0];
+    break;
+  default: return;
+  }
+
+  for (i = 0; i < 9; i++){
+    $(spaces[i]).attr('data-square', newOrder[i]);
+  }
+}
 
 playerMovesFirst = {
   0: {
@@ -310,17 +346,29 @@ playerMovesFirst = {
                 6: {
                     move: 3,
                     3: { //0, 4, 5, 8, 6, 3, __
-                      1: {},
-                      2: {},
-                      7: {}
+                      1: {
+                          move: {draw: 2}
+                      },
+                      2: {
+                          move: {draw: 1}
+                      },
+                      7: {
+                          move: {draw: 2}
+                      }
                     }
                 },
                 7: {
                     move: 6,
                     6: { //0, 4, 5, 8, 7, 6, __
-                      1: {},
-                      2: {},
-                      3: {}
+                      1: {
+                          move: {win: 2}
+                      },
+                      2: {
+                          move: {draw: 1}
+                      },
+                      3: {
+                          move: {win: 2}
+                      }
                     }
                 }
               }
@@ -328,43 +376,144 @@ playerMovesFirst = {
           6: {
               move: 3,
               3: { //0, 4, 6, 3, __
-                1: {},
-                2: {},
-                5: {},
-                7: {},
-                8: {}
+                1: { //0, 4, 6, 3, 1,  __
+                    move: {win: 5}
+                },
+                2: {
+                    move: {win: 5}
+                },
+                5: {
+                    move: 1,
+                    1: {
+                        2: {
+                            move: {win: 7}
+                        },
+                        7: {
+                            move: {draw: 8}
+                        },
+                        8: {
+                            move: {win: 7}
+                        }
+                    }
+                },
+                7: {
+                    move: {win: 5}
+                },
+                8: {
+                    move: {win: 5}
+                }
               }
           },
           7: {
               move: 8,
               8: { //0, 4, 7, 8, __
-                1: {},
-                2: {},
-                3: {},
-                5: {},
-                6: {}
+                1: {
+                    move: 2,
+                    2: {
+                        3: {
+                            move: {win: 6}
+                        },
+                        5: {
+                            move: {win: 6}
+                        },
+                        6: {
+                            move: {draw: 5}
+                        }
+                    }
+                },
+                2: {
+                    move: 1,
+                    1: {
+                        3: {
+                            move: {draw: 6}
+                        },
+                        5: {
+                            move: {draw: 6}
+                        },
+                        6: {
+                            move: {draw: 3}
+                        }
+                    }
+                },
+                3: {
+                    move: 6,
+                    6: {
+                        1: {
+                            move: {win: 2}
+                        },
+                        2: {
+                            move: {draw: 1}
+                        },
+                        5: {
+                            move: {win: 2}
+                        }
+                    }
+                },
+                5: {
+                    move: 2,
+                    2: {
+                        1: {
+                            move: {win: 6}
+                        },
+                        3: {
+                            move: {win: 6}
+                        },
+                        6: {
+                            move: {draw: 3}
+                        }
+                    }
+                },
+                6: {
+                    move: 3,
+                    3: {
+                        1: {
+                            move: {win: 5}
+                        },
+                        2: {
+                            move: {win: 5}
+                        },
+                        5: {
+                            move: {draw: 2}
+                        }
+                    }
+                }
               }
           },
           8: {
               move: 7,
-              7: { //0, 4, 7, 8, __
-                1: {},
-                2: {},
-                3: {},
-                5: {},
-                6: {}
+              7: { //0, 4, 8, 7, __
+                1: {
+                    move: 2,
+                    2: {
+                        3: {
+                            move: {win: 6}
+                        },
+                        5: {
+                            move: {win: 6}
+                        },
+                        6: {
+                            move: {draw: 3}
+                        }
+                    }
+                },
+                2: {
+                    move: {win: 1}
+                },
+                3: {
+                    move: {win: 1}
+                },
+                5: {
+                    move: {win: 1}
+                },
+                6: {
+                    move: {win: 1}
+                }
               }
           }
       }
   },
   1: {},
-  2: {},
-  3: {},
-  4: {},
-  5: {},
-  6: {},
-  7: {},
-  8: {}
+  4: {}
 };
 
 computerMovesFirst = {
@@ -419,7 +568,7 @@ computerMovesFirst = {
                   move: {win: 6}
               },
               6: {
-                  move: 4
+                  move: 4,
                   4: {
                       2: {
                           move: {win: 5}
@@ -677,5 +826,6 @@ computerMovesFirst = {
           }
       }},
 };
+
 
 //if move, do x, then return
