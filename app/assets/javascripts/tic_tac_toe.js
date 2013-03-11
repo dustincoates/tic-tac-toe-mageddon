@@ -3,15 +3,6 @@ $(function() {
 });
 
 TTTAPP = {};
-TTTAPP.player = 1;
-TTTAPP.computer = -1;
-TTTAPP.currentPlayer = "player";
-TTTAPP.currentMove = {
-  row: null,
-  column: null,
-  diagonal0: null,
-  diagonal1: null
-};
 TTTAPP.movesPlayed = [];
 
 TTTAPP.playPlayerMove = function (space) {
@@ -25,15 +16,40 @@ TTTAPP.playPlayerMove = function (space) {
 
   TTTAPP.updateGameData(spaceNum);
 
-  // TTTAPP.determineWinner(spaceNum);
-
   TTTAPP.playComputerMove();
 };
 
 TTTAPP.playComputerMove = function() {
-  var movesPlayedNum = TTTAPP.movesPlayed.length;
+  var movesPlayedNum = TTTAPP.movesPlayed.length,
+      movesHolder = playerMovesFirst;
 
   // TODO: Determine which move to make next
+  for (var i = 0; i < movesPlayedNum; i++) {
+    movesHolder = movesHolder[TTTAPP.movesPlayed[i]];
+  }
+
+  if (typeof(movesHolder.move) === "number") {
+    TTTAPP.setSpace($('div.square[data-square="' + movesHolder.move + '"]'),"computer");
+    TTTAPP.updateGameData(movesHolder.move);
+  }
+  else if(movesHolder.move.win){
+    TTTAPP.setSpace($('div.square[data-square="' + movesHolder.move.win + '"]'),"computer");
+    winGame();
+    $('div.announcement').click(resetGame);
+    return;
+  }
+  else if(movesHolder.move.draw){
+    TTTAPP.setSpace($('div.square[data-square="' + movesHolder.move.draw + '"]'),"computer");
+    drawGame();
+    $('div.announcement').click(resetGame);
+    return;
+  }
+  else {
+    throw("Something went wrong with the moveHolder object.");
+  }
+
+  // Let the player play again.
+  $('div.square:not(.played)').on('click', TTTAPP.playPlayerMove);
 };
 
 TTTAPP.setSpace = function (thisSpace, player) {
@@ -41,9 +57,21 @@ TTTAPP.setSpace = function (thisSpace, player) {
   $(thisSpace).unbind('click');
 };
 
-TTTAPP.resetGame = function () {
+winGame = function () {
+  var oldScore = +$('span#computer-score').text();
+  $('span#computer-score').text(oldScore + 1);
+  $('div#computer-win').removeClass('hidden');
+};
+
+drawGame = function () {
+  $('div#draw').removeClass('hidden');
+};
+
+
+resetGame = function () {
   // Change DOM and re-add click events
   TTTAPP.movesPlayed = [];
+  $('div.announcement').addClass('hidden');
   $('div.square.played').removeClass('played');
   $('div.square.player').removeClass('player');
   $('div.square.computer').removeClass('computer');
@@ -1343,39 +1371,5 @@ computerMovesFirst = {
 
 
 TTTAPP.updateGameData = function (spaceNum) {
-  TTTAPP.movesPlayed.push(spaceNum);
+  TTTAPP.movesPlayed.push(parseInt(spaceNum,10));
 };
-
-// TTTAPP.isOnePlayAway = function(pieceNum) {
-//   //Determine if either player is one play away.
-//   //If so, move there.
-//   var rowTotal = 0,
-//       columnTotal = 0,
-//       diagonal0Total = 0,
-//       diagonal1Total = 0,
-//       currentRow = TTTAPP.rows[TTTAPP.currentMove.row],
-//       currentColumn = TTTAPP.columns[TTTAPP.currentMove.column];
-
-//   //Check the row
-//   for(var space in currentRow){
-//     console.log(currentRow[space]);
-//   }
-
-//   //Check the column
-//   for(var space in currentColumn){
-//     console.log(currentColumn[space]);
-//   }
-
-// };
-
-// TTTAPP.isWinner = function (pieceNum) {
-//   // Ends game if there's a winner
-
-
-// };
-
-// TTTAPP.endGame = function () {
-
-// };
-
-//if move, do x, then return

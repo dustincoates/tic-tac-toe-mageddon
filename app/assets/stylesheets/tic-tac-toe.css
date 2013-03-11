@@ -1,7 +1,41 @@
+body {
+
+}
+
+/*Game Styles*/
+
 .square {
   background: red;
   display: inline-block;
   height: 100px;
   margin: 10px;
   width: 100px;
+}
+
+.computer {
+  background: green;
+}
+
+.player {
+  background: blue;
+}
+
+
+/*Lose, Draw, Win styles*/
+.hidden {
+  display: none;
+}
+
+.announcement {
+  background: rgb(0, 0, 0); /*Fallback for older browsers*/
+  background: rgba(0, 0, 0, .5);
+  bottom: 0;
+  color: #fff;
+  font-size: 10em;
+  left: 0;
+  position: absolute;
+  right: 0;
+  text-transform: uppercase;
+  top: 0;
+  z-index: 100;
 }
