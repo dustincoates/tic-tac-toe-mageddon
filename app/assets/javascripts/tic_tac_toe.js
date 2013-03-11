@@ -1,5 +1,5 @@
 $(function() {
-  $('div.square').click(TTTAPP.playPlayerMove);
+  $('div.square').click(TTTAPP.setUpBoard);
 });
 
 TTTAPP = {};
@@ -12,173 +12,58 @@ TTTAPP.currentMove = {
   diagonal0: null,
   diagonal1: null
 };
-TTTAPP.movesPlayed = 0;
+TTTAPP.movesPlayed = [];
 
-// TTTAPP.rows = {
-//   0: {
-//     total: 0,
-//     0: null,
-//     1: null,
-//     2: null
-//   },
-//   1: {
-//     total: 0,
-//     3: null,
-//     4: null,
-//     5: null
-//   },
-//   2: {
-//     total: 0,
-//     6: null,
-//     7: null,
-//     8: null
-//   }
-// };
+TTTAPP.playPlayerMove = function (space) {
+  var thisSpace = typeof(space) === "number" ? $('div.square[data-square="' + space + '"]') : $(this),
+      spaceNum = $(thisSpace).attr('data-square');
 
-// TTTAPP.columns = {
-//   0: {
-//     total: 0,
-//     0: null,
-//     3: null,
-//     6: null
-//   },
-//   1: {
-//     total: 0,
-//     1: null,
-//     4: null,
-//     7: null
-//   },
-//   2: {
-//     total: 0,
-//     2: null,
-//     5: null,
-//     8: null
-//   }
-// };
+  TTTAPP.setSpace(thisSpace, "player");
 
-// TTTAPP.diagonals = {
-//   0: {
-//     total: 0,
-//     0: null,
-//     4: null,
-//     8: null
-//   },
-//   1: {
-//     total: 0,
-//     2: null,
-//     5: null,
-//     6: null
-//   }
-// };
+  // We temporarily disable game-play for the player.
+  $('div.square').unbind('click');
 
-TTTAPP.playPlayerMove = function () {
-  var thisPiece = $(this),
-      spaceNum = $(thisPiece).data('square');
-  console.log(thisPiece);
-  console.log(spaceNum);
-
-  if (TTTAPP.movesPlayed === 0){
-    rotateBoard(spaceNum);
-  }
-
-  // TTTAPP.getSpaceInfo(spaceNum);
-  // TTTAPP.setSpace(thisPiece, "player");
-
-  // TTTAPP.updateGameData(spaceNum, "player");
+  TTTAPP.updateGameData(spaceNum);
 
   // TTTAPP.determineWinner(spaceNum);
+
+  TTTAPP.playComputerMove();
 };
 
-// TTTAPP.playComputerMove = function() {
-//   TTTAPP.isOnePlayAway();
-// };
+TTTAPP.playComputerMove = function() {
+  var movesPlayedNum = TTTAPP.movesPlayed.length;
 
-// TTTAPP.getSpaceInfo = function (spaceNum) {
-//   TTTAPP.currentMove.row = Math.floor(spaceNum/3),
-//   TTTAPP.currentMove.column = spaceNum % 3,
-//   TTTAPP.currentMove.diagonal0 = (((spaceNum%2) === 0 && (spaceNum%4) !== 0) ||
-//                                  spaceNum === 4),
-//   TTTAPP.currentMove.diagonal1 = ((spaceNum%4) === 0);
-// };
+  // TODO: Determine which move to make next
+};
 
-// TTTAPP.setSpace = function (thisPiece, player) {
-//   $(thisPiece).text(TTTAPP[player]);
-//   $(thisPiece).unbind('click');
-// };
+TTTAPP.setSpace = function (thisSpace, player) {
+  $(thisSpace).addClass(player).addClass("played");
+  $(thisSpace).unbind('click');
+};
 
-// TTTAPP.updateGameData = function (pieceNum, player) {
-//   var playerPiece = TTTAPP[player];
+TTTAPP.resetGame = function () {
+  // Change DOM and re-add click events
+  TTTAPP.movesPlayed = [];
+  $('div.square.played').removeClass('played');
+  $('div.square.player').removeClass('player');
+  $('div.square.computer').removeClass('computer');
 
-//   TTTAPP.movesPlayed++;
-
-//   TTTAPP.rows[TTTAPP.currentMove.row][pieceNum] = playerPiece;
-//   TTTAPP.columns[TTTAPP.currentMove.column][pieceNum] = playerPiece;
-
-//   if (TTTAPP.currentMove.diagonal0) {
-//     TTTAPP.diagonals[0][pieceNum] = playerPiece;
-//   }
-
-//   if (TTTAPP.currentMove.diagonal1) {
-//     TTTAPP.diagonals[1][pieceNum] = playerPiece;
-//   }
-// };
-
-// TTTAPP.isOnePlayAway = function(pieceNum) {
-//   //Determine if either player is one play away.
-//   //If so, move there.
-//   var rowTotal = 0,
-//       columnTotal = 0,
-//       diagonal0Total = 0,
-//       diagonal1Total = 0,
-//       currentRow = TTTAPP.rows[TTTAPP.currentMove.row],
-//       currentColumn = TTTAPP.columns[TTTAPP.currentMove.column];
-
-//   //Check the row
-//   for(var space in currentRow){
-//     console.log(currentRow[space]);
-//   }
-
-//   //Check the column
-//   for(var space in currentColumn){
-//     console.log(currentColumn[space]);
-//   }
-
-// };
-
-// TTTAPP.isWinner = function (pieceNum) {
-//   // Ends game if there's a winner
-
-
-// };
-
-// TTTAPP.swapTurns = function () {
-
-// };
-
-// TTTAPP.endGame = function () {
-
-// };
-
-// TTTAPP.resetGame = function () {
-//   // Change DOM and re-add click events
-
-//   console.log(this.movesPlayed);
-//   TTTAPP.movesPlayed = 0;
-//   $('div.square').innerText("");
-//   $('div.square').click(TTTAPP.playMove);
-// };
+  $('div.square').click(TTTAPP.setUpBoard);
+};
 
 // If player moves first and chooses something other than 0, 1, or 4, then we
 // "rotate" the board (i.e. renumber each space)
-
-function rotateBoard (firstMoveNum) {
-  var newOrder = [],
+TTTAPP.setUpBoard = function () {
+  var firstMove = $(this),
+      firstMoveNum = $(firstMove).data('square'),
+      newOrder = [],
       spaces = {};
 
-  // Set up spaces hash (cache DOM lookups)
-  for (i = 0; i < 9; i++){
-    spaces[i] = $('div.square[data-square="' + i + '"]');
-  }
+  // Don't want to rotate the board anymore.
+  // And this is easier than doing "is this the first move?"
+  $('div.square').unbind();
+
+  $('div.square').on('click', TTTAPP.playPlayerMove);
 
   switch(firstMoveNum){
   case 2:
@@ -193,13 +78,23 @@ function rotateBoard (firstMoveNum) {
   case 8:
     newOrder = [8, 7, 6, 5, 4, 3, 2, 1, 0];
     break;
-  default: return;
+  default: TTTAPP.playPlayerMove(firstMoveNum); return;
   }
 
+  // Set up spaces hash (cache DOM lookups)
+  for (i = 0; i < 9; i++){
+    spaces[i] = $('div.square[data-square="' + i + '"]');
+  }
+
+  // Remap the board
   for (i = 0; i < 9; i++){
     $(spaces[i]).attr('data-square', newOrder[i]);
   }
-}
+
+  // Reset which piece the player played.
+  firstMoveNum = newOrder[firstMoveNum];
+  TTTAPP.playPlayerMove(firstMoveNum);
+};
 
 playerMovesFirst = {
   0: {
@@ -311,7 +206,7 @@ playerMovesFirst = {
                             move: {draw: 3}
                         },
                         7: {
-                            move: {draw: 6}
+                            move: {win: 6}
                         }
                     }
                 },
@@ -512,8 +407,627 @@ playerMovesFirst = {
           }
       }
   },
-  1: {},
-  4: {}
+  1: {
+    move: 4,
+    4: { // 1, 4, __
+        0: {
+            move: 2,
+            2: { // 1, 4, 0, 2, __
+                3: {
+                    move: {win: 6}
+                },
+                5: {
+                    move: {win: 6}
+                },
+                6: { //!!!!
+                    move: 3,
+                    3: {
+                        5: {
+                            move: {draw: 7}
+                        },
+                        7: {
+                            move: {win: 5}
+                        },
+                        8: {
+                            move: {win: 5}
+                        }
+                    }
+                },
+                7: {
+                    move: {win: 6}
+                },
+                8: {
+                    move: {win: 6}
+                }
+            }
+        },
+        2: {
+            move: 0,
+            0: {// 1, 4, 2, 0, __
+                3: {
+                    move: {win: 8}
+                },
+                5: {
+                    move: {win: 8}
+                },
+                6: {
+                    move: {win: 8}
+                },
+                7: {
+                    move: {win: 8}
+                },
+                8: {
+                    move: 5,
+                    5: {
+                        3: {
+                            move: {draw: 7}
+                        },
+                        6: {
+                            move: {win: 3}
+                        },
+                        7: {
+                            move: {win: 3}
+                        }
+                    }
+                }
+            }
+        },
+        3: {
+            move: 0,
+            0: {// 1, 4, 3, 0, __
+                2: {
+                    move: {win: 8}
+                },
+                5: {
+                    move: {win: 8}
+                },
+                6: {
+                    move: {win: 8}
+                },
+                7: {
+                    move: {win: 8}
+                },
+                8: {
+                    move: 2,
+                    2: {
+                        5: {
+                            move: {win: 6}
+                        },
+                        6: {
+                            move: {draw: 7}
+                        },
+                        7: {
+                            move: {win: 6}
+                        }
+                    }
+                }
+            }
+        },
+        5: {
+            move: 2,
+            2: {// 1, 4, 5, 2, __
+                0: {
+                    move: {win: 6}
+                },
+                3: {
+                    move: {win: 6}
+                },
+                6: {
+                    move: 0,
+                    0: {
+                        3: {
+                            move: {win: 8}
+                        },
+                        7: {
+                            move: {win: 8}
+                        },
+                        8: {
+                            move: {draw: 7}
+                        }
+                    }
+                },
+                7: {
+                    move: {win: 6}
+                },
+                8: {
+                    move: {win: 6}
+                }
+            }
+        },
+        6: {
+            move: 2,
+            2: {// 1, 4, 6, 2, __
+                0: {
+                    move: 3,
+                    3: {
+                        5: {
+                            move: {draw: 7}
+                        },
+                        7: {
+                            move: {win: 5}
+                        },
+                        8: {
+                            move: {win: 5}
+                        }
+                    }
+                },
+                3: {
+                    move: 0,
+                    0: {
+                        5: {
+                            move: {win: 8}
+                        },
+                        7: {
+                            move: {win: 8}
+                        },
+                        8: {
+                            move: {win: 7}
+                        }
+                    }
+                },
+                5: {
+                    move: 8,
+                    8: {
+                        0: {
+                            move: {draw: 3}
+                        },
+                        3: {
+                            move: {win: 0}
+                        },
+                        7: {
+                            move: {win: 0}
+                        }
+                    }
+                },
+                7: {
+                    move: 8,
+                    8: {
+                        0: {
+                            move: {win: 5}
+                        },
+                        3: {
+                            move: {win: 5}
+                        },
+                        5: {
+                            move: {win: 0}
+                        }
+                    }
+                },
+                8: {
+                    move: 7,
+                    7: {
+                        0: {
+                            move: {draw: 3}
+                        },
+                        3: {
+                            move: {draw: 0}
+                        },
+                        5: {
+                            move: {draw: 3}
+                        }
+                    }
+                }
+            }
+        },
+        7: {
+            move: 5,
+            5: {// 1, 4, 7, 5, __
+                0: {
+                    move: {win: 3}
+                },
+                2: {
+                    move: {win: 3}
+                },
+                3: {
+                    move: 8,
+                    8: {
+                        0: {
+                            move: {win: 2}
+                        },
+                        2: {
+                            move: {win: 0}
+                        },
+                        6: {
+                            move: {win: 2}
+                        }
+                    }
+
+                },
+                6: {
+                    move: {win: 3}
+                },
+                8: {
+                    move: {win: 3}
+                }
+            }
+        },
+        8: {
+            move: 0,
+            0: { // 1, 4, 8, 0, __
+                2: {
+                    move: 5,
+                    5: {
+                        3: {
+                            move: {draw: 7}
+                        },
+                        6: {
+                            move: {win: 3}
+                        },
+                        7: {
+                            move: {win: 3}
+                        }
+                    }
+                },
+                3: {
+                    move: 6,
+                    6: {
+                        2: {
+                            move: {draw: 5}
+                        },
+                        5: {
+                            move: {win: 2}
+                        },
+                        7: {
+                            move: {win: 2}
+                        }
+                    }
+                },
+                5: {
+                    move: 2,
+                    2: {
+                        3: {
+                            move: {win: 6}
+                        },
+                        6: {
+                            move: {draw: 7}
+                        },
+                        7: {
+                            move: {win: 6}
+                        }
+                    }
+                },
+                6: {
+                    move: 7,
+                    7: {
+                        2: {
+                            move: {draw: 5}
+                        },
+                        3: {
+                            move: {draw: 5}
+                        },
+                        5: {
+                            move: {draw: 2}
+                        }
+                    }
+                },
+                7: {
+                    move: 6,
+                    6: {
+                        2: {
+                            move: {win: 3}
+                        },
+                        3: {
+                            move: {win: 2}
+                        },
+                        5: {
+                            move: {win: 3}
+                        }
+                    }
+                }
+            }
+        }
+    }
+  },
+  4: {
+      move: 0,
+      0: { // 4, 0, __
+          1: {
+              move: 7,
+              7: { // 4, 0, 1, 7, __
+                  2: {
+                      move: 6,
+                      6: {
+                          3: {
+                              move: {win: 8}
+                          },
+                          5: {
+                              move: {win: 8}
+                          },
+                          8: {
+                              move: {win: 3}
+                          }
+                      }
+                  },
+                  3: {
+                      move: 5,
+                      5: {
+                          2: {
+                              move: {draw: 6}
+                          },
+                          6: {
+                              move: {draw: 2}
+                          },
+                          8: {
+                              move: {draw: 6}
+                          }
+                      }
+                  },
+                  5: {
+                      move: 3,
+                      3: {
+                          2: {
+                              move: {win: 6}
+                          },
+                          6: {
+                              move: {draw: 2}
+                          },
+                          8: {
+                              move: {win: 6}
+                          }
+                      }
+                  },
+                  6: {
+                      move: 2,
+                      2: {
+                          3: {
+                              move: {draw: 5}
+                          },
+                          5: {
+                              move: {draw: 3}
+                          },
+                          8: {
+                              move: {draw: 5}
+                          }
+                      }
+                  },
+                  8: {
+                      move: 6,
+                      6: {
+                          2: {
+                              move: {win: 3}
+                          },
+                          3: {
+                              move: {draw: 5}
+                          },
+                          5: {
+                              move: {win: 3}
+                          }
+                      }
+                  }
+              }
+          },
+          2: { // 4, 0, 2
+              move: 6,
+              6: { // 4, 0, 2, 6
+                  1: {
+                      move: {win: 3}
+                  },
+                  3: {
+                      move: 5,
+                      5: {
+                          1: {
+                              move: {draw: 7}
+                          },
+                          7: {
+                              move: {draw: 1}
+                          },
+                          8: {
+                              move: {draw: 7}
+                          }
+                      }
+                  },
+                  5: {
+                      move: {win: 3}
+                  },
+                  7: {
+                      move: {win: 3}
+                  },
+                  8: {
+                      move: {win: 3}
+                  }
+              }
+          },
+          3: { // 4, 0, 3
+              move: 5,
+              5: {
+                  1: {
+                      move: 7,
+                      7: {
+                          2: {
+                              move: {draw: 6}
+                          },
+                          6: {
+                              move: {draw: 2}
+                          },
+                          8: {
+                              move: {draw: 2}
+                          }
+                      }
+                  },
+                  2: {
+                      move: 6,
+                      6: {
+                          1: {
+                              move: {draw: 7}
+                          },
+                          7: {
+                              move: {draw: 1}
+                          },
+                          8: {
+                              move: {draw: 7}
+                          }
+                      }
+                  },
+                  6: {
+                      move: 2,
+                      2: {
+                          1: {
+                              move: {win: 8}
+                          },
+                          7: {
+                              move: {win: 8}
+                          },
+                          8: {
+                              move: {win: 2}
+                          }
+                      }
+                  },
+                  7: {
+                      move: 1,
+                      1: {
+                          2: {
+                              move: {draw: 6}
+                          },
+                          6: {
+                              move: {win: 2}
+                          },
+                          8: {
+                              move: {win: 2}
+                          }
+                      }
+                  },
+                  8: {
+                      move: 2,
+                      2: {
+                          1: {
+                              move: {draw: 7}
+                          },
+                          6: {
+                              move: {win: 1}
+                          },
+                          7: {
+                              move: {win: 1}
+                          }
+                      }
+                  }
+              }
+          },
+          5: { // 4, 0, 5
+              move: 3,
+              3: {
+                  1: {
+                      move: {win: 6}
+                  },
+                  2: {
+                      move: {win: 6}
+                  },
+                  6: {
+                      move: 2,
+                      2: {
+                          1: {
+                              move: {draw: 7}
+                          },
+                          7: {
+                              move: {win: 1}
+                          },
+                          8: {
+                              move: {win: 1}
+                          }
+                      }
+                  },
+                  7: {
+                      move: {win: 6}
+                  },
+                  8: {
+                      move: {win: 6}
+                  }
+              }
+          },
+          6: { // 4, 0, 6
+              move: 2,
+              2: {
+                  1: {
+                      move: 7,
+                      7: {
+                          3: {
+                              move: {draw: 5}
+                          },
+                          5: {
+                              move: {draw: 3}
+                          },
+                          8: {
+                              move: {draw: 5}
+                          }
+                      }
+                  },
+                  3: {
+                      move: {win: 1}
+                  },
+                  5: {
+                      move: {win: 1}
+                  },
+                  7: {
+                      move: {win: 1}
+                  },
+                  8: {
+                      move: {win: 1}
+                  }
+              }
+          },
+          7: { // 4, 0, 7
+              move: 1,
+              1: {
+                  2: {
+                      move: 6,
+                      6: {
+                          3: {
+                              move: {draw: 5}
+                          },
+                          5: {
+                              move: {win: 3}
+                          },
+                          8: {
+                              move: {win: 3}
+                          }
+                      }
+                  },
+                  3: {
+                      move: {win: 2}
+                  },
+                  5: {
+                      move: {win: 2}
+                  },
+                  6: {
+                      move: {win: 2}
+                  },
+                  8: {
+                      move: {win: 2}
+                  }
+              }
+          },
+          8: {
+              move: 6,
+              6: {
+                  1: {
+                      move: {win: 3}
+                  },
+                  2: {
+                      move: {win: 3}
+                  },
+                  3: {
+                      move: 5,
+                      5: {
+                          1: {
+                              move: {draw: 7}
+                          },
+                          2: {
+                              move: {draw: 1}
+                          },
+                          7: {
+                              move: {draw: 1}
+                          }
+                      }
+                  },
+                  5: {
+                      move: {win: 3}
+                  },
+                  7: {
+                      move: {win: 3}
+                  }
+              }
+          }
+      }
+  }
 };
 
 computerMovesFirst = {
@@ -805,7 +1319,7 @@ computerMovesFirst = {
                       },
                       7: {
                           move: {win: 3}
-                      },
+                      }
                   }
               },
               3: {
@@ -824,8 +1338,44 @@ computerMovesFirst = {
                   move: {win: 1}
               }
           }
-      }},
+      }}
 };
 
+
+TTTAPP.updateGameData = function (spaceNum) {
+  TTTAPP.movesPlayed.push(spaceNum);
+};
+
+// TTTAPP.isOnePlayAway = function(pieceNum) {
+//   //Determine if either player is one play away.
+//   //If so, move there.
+//   var rowTotal = 0,
+//       columnTotal = 0,
+//       diagonal0Total = 0,
+//       diagonal1Total = 0,
+//       currentRow = TTTAPP.rows[TTTAPP.currentMove.row],
+//       currentColumn = TTTAPP.columns[TTTAPP.currentMove.column];
+
+//   //Check the row
+//   for(var space in currentRow){
+//     console.log(currentRow[space]);
+//   }
+
+//   //Check the column
+//   for(var space in currentColumn){
+//     console.log(currentColumn[space]);
+//   }
+
+// };
+
+// TTTAPP.isWinner = function (pieceNum) {
+//   // Ends game if there's a winner
+
+
+// };
+
+// TTTAPP.endGame = function () {
+
+// };
 
 //if move, do x, then return
