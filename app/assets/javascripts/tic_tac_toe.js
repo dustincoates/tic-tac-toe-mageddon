@@ -1,9 +1,11 @@
 $(function() {
   $('div.square').click(TTTAPP.setUpBoard);
+  $('div.reset').click(resetGame);
 });
 
 TTTAPP = {};
 TTTAPP.movesPlayed = [];
+TTTAPP.movesPlayedOverall = [];
 
 TTTAPP.playPlayerMove = function (space) {
   var thisSpace = typeof(space) === "number" ? $('div.square[data-square="' + space + '"]') : $(this),
@@ -20,6 +22,7 @@ TTTAPP.playPlayerMove = function (space) {
 };
 
 TTTAPP.playComputerMove = function() {
+
   var movesPlayedNum = TTTAPP.movesPlayed.length,
       movesHolder = playerMovesFirst;
 
@@ -35,13 +38,15 @@ TTTAPP.playComputerMove = function() {
   else if(movesHolder.move.win){
     TTTAPP.setSpace($('div.square[data-square="' + movesHolder.move.win + '"]'),"computer");
     winGame();
-    $('div.announcement').click(resetGame);
+    $('div#computer-win').click(resetGame);
+
     return;
   }
   else if(movesHolder.move.draw){
     TTTAPP.setSpace($('div.square[data-square="' + movesHolder.move.draw + '"]'),"computer");
     drawGame();
-    $('div.announcement').click(resetGame);
+
+    $('div#draw').click(resetGame);
     return;
   }
   else {
@@ -69,28 +74,54 @@ drawGame = function () {
 
 
 resetGame = function () {
-  // Change DOM and re-add click events
-  TTTAPP.movesPlayed = [];
   $('div.announcement').addClass('hidden');
+
+  var spaces = {};
+  TTTAPP.movesPlayed = [];
+
+  // Change DOM and re-add click events
   $('div.square.played').removeClass('played');
   $('div.square.player').removeClass('player');
   $('div.square.computer').removeClass('computer');
 
+  // Renumber the board. We're using IDs because we reset the data attribute.
+  // We start off with "box..." because IDs cannot start with numbers.
+  // If we don't do this, we run into issues on next play.
+
+  // Set up spaces hash (cache DOM lookups)
+  for (i = 0; i < 9; i++){
+    spaces[i] = $('div#box' + i);
+  }
+  // Remap the board
+  for (i = 0; i < 9; i++){
+
+    $(spaces[i]).attr('data-square', i);
+  }
+
   $('div.square').click(TTTAPP.setUpBoard);
+};
+
+hideMessage = function (){
+  $('div.reset').removeClass('hidden');
 };
 
 // If player moves first and chooses something other than 0, 1, or 4, then we
 // "rotate" the board (i.e. renumber each space)
 TTTAPP.setUpBoard = function () {
+
+  console.log(Date.now);
+  console.log(TTTAPP.movesPlayed);
+  console.log(TTTAPP.movesPlayed.length);
+
   var firstMove = $(this),
       firstMoveNum = $(firstMove).data('square'),
       newOrder = [],
       spaces = {};
 
+
   // Don't want to rotate the board anymore.
   // And this is easier than doing "is this the first move?"
   $('div.square').unbind();
-
   $('div.square').on('click', TTTAPP.playPlayerMove);
 
   switch(firstMoveNum){
@@ -106,7 +137,11 @@ TTTAPP.setUpBoard = function () {
   case 8:
     newOrder = [8, 7, 6, 5, 4, 3, 2, 1, 0];
     break;
-  default: TTTAPP.playPlayerMove(firstMoveNum); return;
+  case 0:
+  case 1:
+  case 4:
+    TTTAPP.playPlayerMove(firstMoveNum);
+    return;
   }
 
   // Set up spaces hash (cache DOM lookups)
@@ -1372,4 +1407,5 @@ computerMovesFirst = {
 
 TTTAPP.updateGameData = function (spaceNum) {
   TTTAPP.movesPlayed.push(parseInt(spaceNum,10));
+  TTTAPP.movesPlayedOverall.push(parseInt(spaceNum,10));
 };
