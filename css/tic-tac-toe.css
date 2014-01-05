@@ -69,11 +69,11 @@ h1, .game-stats, .announcement {
 }
 
 .computer {
-  background: url('/assets/o-piece.png');
+  background: url('../images/o-piece.png');
 }
 
 .player {
-  background: url('/assets/x-piece.png');
+  background: url('../images/x-piece.png');
 }
 
 .played {

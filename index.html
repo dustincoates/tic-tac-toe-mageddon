@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic-Tac-Toe</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/tic-tac-toe.css">
+</head>
+<body>
+
+  <h1>Tic-Tac-Toe</h1>
+
+  <div class="game-stats">
+    <div class="player-stats">
+      <h3>You</h3>
+      <span id="player-score">0</span>
+    </div>
+    <div class="computer-stats">
+      <h3>Computer</h3>
+      <span id="computer-score">0</span>
+    </div>
+  </div>
+
+  <div class="game-board">
+    <div class="row">
+      <div data-square="0" class="square" id="box0"></div>
+      <div data-square="1" class="square" id="box1"></div>
+      <div data-square="2" class="square" id="box2"></div>
+    </div>
+    <div class="row">
+      <div data-square="3" class="square" id="box3"></div>
+      <div data-square="4" class="square" id="box4"></div>
+      <div data-square="5" class="square" id="box5"></div>
+    </div>
+    <div class="row">
+      <div data-square="6" class="square" id="box6"></div>
+      <div data-square="7" class="square" id="box7"></div>
+      <div data-square="8" class="square" id="box8"></div>
+    </div>
+  </div>
+
+  <div class="reset hidden">
+    <h2>Reset Game</h2>
+  </div>
+
+  <div class="hidden announcement" id="draw">
+    <span>Draw</span>
+  </div>
+  <div class="hidden announcement" id="computer-win">
+    <span>You Lose</span>
+  </div>
+  <!--The one below will never be needed. BAHAHAHAH. :) -->
+  <div class="hidden announcement" id="computer-lose">
+    <span>You Win</span>
+  </div>
+
+  <script src="js/jquery.js"></script>
+  <script src="js/tic-tac-toe.js"></script>
+</body>
+</html>

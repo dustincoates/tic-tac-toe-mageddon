@@ -20,7 +20,6 @@ TTTAPP.playPlayerMove = function (space) {
 };
 
 TTTAPP.playComputerMove = function() {
-
   var movesPlayedNum = TTTAPP.movesPlayed.length,
       movesHolder = TTTAPP.movesObject;
 
@@ -165,7 +164,7 @@ TTTAPP.movesObject = {
                       move: 3,
                       3: {
                           5: {
-                              move: {win: 8}
+                              move: {draw: 8}
                           },
                           7: {
                               move: {win: 8}
